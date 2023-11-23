@@ -1,0 +1,97 @@
+﻿@inherits LayoutComponentBase
+
+
+<PageTitle>Bookstore</PageTitle>
+<div class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="background-color: #dcdfd5;">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <img src="Images/Eicon.png" alt="eBook" height="30" width="30" @onclick="NavigateToHome" />
+            <div class="navbar-brand" @onclick="NavigateToHome">Book</div>
+        </div>
+        <div class="top-menu navbar-nav d-none d-md-flex">
+            <NavLink class="nav-link" href="Books">
+                <span class="oi oi-book" aria-hidden="true" style="color: #43AA8B;"></span> Books
+            </NavLink>
+        </div>
+        <div class="top-menu navbar-nav d-none d-md-flex">
+            <NavLink class="nav-link" href="User">
+                <span class="oi oi-person" aria-hidden="true" style="color: #277DA1;"></span> User
+            </NavLink>
+        </div>
+        <div class="top-menu navbar-nav d-none d-md-flex">
+            <NavLink class="nav-link" href="Cart">
+                <span class="oi oi-cart" aria-hidden="true" style="color: #F8961E;"></span> Shopping Cart @GetCartAmount()
+            </NavLink>
+        </div>
+        <button title="Navigation menu" class="navbar-toggler d-md-none" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+
+<div class="page">
+    <div class="sidebar @collapseCssClass">
+        <NavMenu />
+    </div>
+</div>
+
+<div class="wrapper d-flex flex-column">
+    <div class="page flex-grow-1">
+        <article class="content px-4">
+            @Body
+        </article>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2023 Magnus Forsman</p>
+</footer>
+
+<style>
+    .footer {
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        margin-top: auto;
+    }
+
+    .wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page {
+        flex-grow: 1;
+    }
+
+    .fixed-top {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        /* Adjust the z-index as needed to ensure the navbar appears above other elements */
+    }
+
+</style>
+
+@code {
+    [Inject] private NavigationManager NavigationManager { get; set; }
+    
+    private bool collapseNavMenu = true;
+
+    private string collapseCssClass => collapseNavMenu ? "collapse" : "";
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void NavigateToHome()
+    {
+        // Use NavigationManager to navigate to the Home page
+        NavigationManager.NavigateTo("");
+    }
+}
+

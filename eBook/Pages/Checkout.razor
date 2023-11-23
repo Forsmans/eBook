@@ -1,0 +1,56 @@
+﻿@page "/Checkout"
+@using eBook.Data;
+@using eBook.Models;
+@using Microsoft.EntityFrameworkCore;
+@inject StoreDBContext dbcontext
+@inject NavigationManager Navigation
+
+<article class="content px-4" style="padding-top: 56px;">
+<div class="row">
+    <div class="col-md-12 text-center">
+<h3>Thanks for your purchace!</h3>
+<h5><br />Welcome in to our store  @Program.choosenStore.StoreName at @Program.choosenStore.Adress to pick up your books.</h5>
+</div>
+</div>
+    <div style="text-align: center; margin-top: 50px; margin-bottom: 50px;" class="mx-auto mt-5">
+        <h3>Order details</h3>
+        <div class="col-md-12" style="margin-top: 20px; margin-bottom: 20px;">
+            <div class="card">
+                <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                    <form>
+
+                        <table class="table table-hover" style="margin-bottom: 50px;">
+                                <thead>
+
+                                    <tr class="table-active">
+                                        <th scope="row">Order:</th>
+                                        <td>Book title: </td>
+                                        <td>Book price: </td>
+                                        <td>Payment method: </td>
+                                    </tr>
+
+                                    @foreach (var book in Program.cart.GetCartBooks())
+                                    {
+                                        <tr>
+                                            <th scope="row">Details</th>
+                                            <td>@book.Title</td>
+                                            <td>@book.Price</td>
+                                            <td>Klarna</td>
+                                        </tr> 
+                                    }
+
+                                <tr class="table-active">
+                                    <th scope="row">Total:</th>
+                                    <td>Quantity: @Program.cart.GetCartBooks().Count</td>
+                                    <td>Price: @GetTotal()</td>
+                                    <td>Payment method: Klarna</td>
+                                </tr>
+                                </thead>
+                            </table>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

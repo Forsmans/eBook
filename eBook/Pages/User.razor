@@ -1,0 +1,110 @@
+﻿@page "/User"
+@using eBook.Data;
+@using eBook.Models;
+@using Microsoft.EntityFrameworkCore;
+@inject StoreDBContext dbcontext
+@inject NavigationManager Navigation
+
+
+@if (Program.CurrentUser == null)
+{
+    Navigation.NavigateTo("/Login");
+}
+else if(Program.CurrentUser.CustomerId == 7)
+{
+    Navigation.NavigateTo("/Admin");
+}
+else
+{
+<article class="content px-4" style="padding-top: 56px;">
+    <div class="row">
+
+        <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mr-auto">Settings for @Program.CurrentUser.FirstName</h3>
+            <button type="button" class="btn btn-danger" @onclick="LogOut">Log out</button>
+        </div>
+
+
+        <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+            <h3>Change your information</h3>
+            <form>
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" @bind="Program.CurrentUser.FirstName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">First Name:</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" @bind="Program.CurrentUser.LastName">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone number:</label>
+                    <input type="number" class="form-control" id="phoneNumber" placeholder="Enter your phone number" @bind="Program.CurrentUser.PhoneNumber">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" @bind="Program.CurrentUser.Email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" @bind="Program.CurrentUser.Password">
+                </div>
+        
+                <button type="button" class="btn btn-success" style="margin-top: 20px;" @onclick="UpdateUser">Update</button>
+            </form>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+            <h3>Order History</h3>
+            <div class="col-md-12" style="margin-top: 20px; margin-bottom: 20px;">
+                <div class="card">
+                    <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                        <form>
+                            @foreach(var order in orders)
+                                {
+                                    int totalQuantity = 0;
+
+                                    if(order.CustomerId == Program.CurrentUser.CustomerId)
+                                    {
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr class="table-active">
+                                                    <th scope="row">Order number: @order.OrderId</th>
+                                                    <td>Book Title</td>
+                                                    <td>Author</td>
+                                                    <td>Price</td>
+                                                </tr>
+                                                @foreach(var detail in orderDetails)
+                                                {
+                                                    if(order.OrderId == detail.OrderId)
+                                                    {
+                                                        <tr>
+                                                            <th scope="row">Details</th>
+                                                            <td>@GetBook(detail.Isbn13).Title</td>
+                                                            <td>@GetAuthor(GetBook(detail.Isbn13).AuthorId).FirstName @GetAuthor(GetBook(detail.Isbn13).AuthorId).LastName</td>
+                                                            <td>@GetBook(detail.Isbn13).Price</td>
+                                                        </tr>
+                                                        totalQuantity++;
+                                                    }
+                                                }
+                                                <tr class="table-active">
+                                                    <th scope="row">Total:</th>
+                                                    <td>Quantity: @totalQuantity</td>
+                                                    <td>Payed with: @order.PaymentMethod</td>
+                                                    <td>Total: @order.PaymentAmount</td>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    }
+                                }
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</article>
+}
+
+

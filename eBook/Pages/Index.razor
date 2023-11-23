@@ -1,0 +1,46 @@
+﻿@inject NavigationManager NavigationManager
+@page "/"
+
+<PageTitle>Home</PageTitle>
+<article class="content px-4" style="padding-top: 56px;">
+<div class="video-container" style="margin-bottom: 20px;">
+    <div class="content-overlay">
+        <div class="container">
+            <h1 style="margin-bottom: 50px;">Welcome to <img src="Images/Eicon.png" alt="eBook" height="70" width="70" style="margin-bottom: 15px;" />Book</h1>
+
+            <h6 style="margin-bottom: 50px;">Discover the joy of getting lost in a good book, and let the pages transport you to worlds filled with wonder and excitement. With our easy-to-navigate online store, you can conveniently browse, purchase, and have your favorite books delivered right to your doorstep. Embrace the season of reading and get ready to embark on a journey of literary delight. Welcome to a winter filled with captivating stories and the timeless joy of reading at our bookstore.</h6>
+            
+        </div>
+    </div>
+    <video autoplay muted loop class="fullscreen-video rounded">
+        <source src="Images/bookvideo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+</article>
+
+<style>
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .fullscreen-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+    }
+
+    .content-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        font-size: 24px;
+    }
+</style>

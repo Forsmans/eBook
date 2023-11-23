@@ -1,0 +1,96 @@
+﻿@page "/Books"
+@using eBook.Data;
+@using eBook.Models;
+@using Microsoft.EntityFrameworkCore;
+@inject StoreDBContext dbcontext
+@inject NavigationManager Navigation
+
+<PageTitle>Books</PageTitle>
+
+<article class="content px-4" style="padding-top: 56px;">
+<div class="row">
+    <div class="col-md-12 text-center" style="margin-bottom: 50px;">
+        <h3>Our Books</h3>
+            <p class="lead">Choose a store to see the stock and purchase, if you change store your cart will clear.</p>
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin-top: 25px;">
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradioF" autocomplete="off" checked="">
+            <label class="btn btn-outline-primary" for="btnradioF" @onclick="() => UpdateChoosenStore(stores[1])">Frölunda</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradioM" autocomplete="off" checked="">
+            <label class="btn btn-outline-primary" for="btnradioM" @onclick="() => UpdateChoosenStore(stores[0])">Mölndal</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradioN" autocomplete="off" checked="">
+            <label class="btn btn-outline-primary" for="btnradioN" @onclick="() => UpdateChoosenStore(stores[2])">Nordstan</label>
+
+            <input type="radio" class="btn-check" name="btnradio" id="btnradioA" autocomplete="off" checked="">
+            <label class="btn btn-outline-primary" for="btnradioA" @onclick="() => UpdateChoosenStore(null)">All Books</label>
+        </div>
+        @if(Program.choosenStore != null)
+        {
+            <p style="margin-top: 50px;">Our store in @Program.choosenStore.StoreName is located at @Program.choosenStore.Adress</p>
+        }
+    </div>
+
+
+    @foreach (var book in books)
+    {
+        @if (Program.choosenStore != null && GetStoreQuantity(book) != "0")
+        {
+            <div class="col-md-3" style="margin-top: 20px; margin-bottom: 20px;">
+                <div class="card" >
+                    <img class="card-img-top" src="@GetBookCover(book)" alt="Book cover">
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text">@GetAuthorName(book.AuthorId)</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                    <p class="card-text">qty:@GetStoreQuantity(book)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="card-text"><strong>@book.Price KR</strong></p>
+                            </div>
+                        </div>
+                        
+                            
+                        <div class="row">
+                            <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="quantityOfPurchase">Quantity to Purchase:</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="number" class="form-control" id="quantityOfPurchase" @bind="quantityOfPurchase">
+                                        </div>
+                                    </div>
+                            </div>
+                                <button type="button" class="btn btn-success" style="margin-top: 20px;" @onclick="() => Purchase(book, quantityOfPurchase)">Add to cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else if(Program.choosenStore == null) 
+        {
+                <div class="col-md-3" style="margin-top: 20px; margin-bottom: 20px;">
+                <div class="card">
+                    <img class="card-img-top" src="@GetBookCover(book)">
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text">@GetAuthorName(book.AuthorId)</p>
+                        <p class="card-text"><strong>@book.Price KR</strong></p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+</article>
+
+<style>
+    .card-img-top {
+        height: 600px; /* Set the desired height */
+        object-fit: cover; /* This property ensures the image retains its aspect ratio and covers the entire space */
+    }
+</style>

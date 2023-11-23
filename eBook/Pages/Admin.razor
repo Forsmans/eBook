@@ -1,0 +1,206 @@
+﻿@page "/Admin"
+@using eBook.Data;
+@using eBook.Models;
+@using Microsoft.EntityFrameworkCore;
+@inject StoreDBContext dbcontext
+@inject NavigationManager Navigation
+
+@* @if (Program.CurrentUser != null && (Program.CurrentUser.Email.ToLower() != "admin@bookstore.com" || Program.CurrentUser.Email.ToLower() == null))
+{
+    Navigation.NavigateTo("/User");
+}else
+{
+     *@
+<article class="content px-4" style="padding-top: 56px;">
+<div class="row">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="mr-auto">Admin Panel</h3>
+            <button type="button" class="btn btn-danger" @onclick="LogOut">Log out</button>
+        </div>
+
+
+    @* Add book *@
+        <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="card">
+            <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                <h3>Add Book</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="ISBN13">ISBN13:</label>
+                            <input type="number" class="form-control" id="isbn13" maxlength="13" placeholder="Enter ISBN13" @bind="newBook.Isbn13" oninput="javascript: if (this.value.length > 13) this.value = this.value.slice(0, 13);">
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" class="form-control" id="title" placeholder="Enter book Title" @bind="newBook.Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="authorId" class="form-label mt-4">Select an author:</label>
+                        <select multiple="" class="form-select" id="authorId" @onchange="SelectAuthorForBook">
+                            @foreach (var author in authors)
+                            {
+                                <option value="@author.AuthorId">@author.FirstName @author.LastName</option>
+
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="language">Language:</label>
+                        <input type="text" class="form-control" id="language" placeholder="Enter book Language" @bind="newBook.Language">
+                    </div>
+                    <div class="form-group">
+                        <label for="publishDate">Publish Date:</label>
+                        <input type="date" class="form-control" id="publishDate" placeholder="Enter Publish Date" @bind="newBook.PublishDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="number" class="form-control" id="price" placeholder="Enter book Price" @bind="newBook.Price">
+                    </div>
+                    <div class="form-group">
+                        <label for="numberOfPages">Number of pages:</label>
+                        <input type="number" class="form-control" id="numberOfPages" placeholder="Enter number of pages" @bind="newBook.NumberOfPages">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCover">Book cover path:</label>
+                        <input type="text" class="form-control" id="bookCover" placeholder="Enter book cover path" @bind="newBook.BookCover">
+                    </div>
+                    <button type="button" class="btn btn-success" style="margin-top: 20px;" @onclick="AddBook">Add book</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* Edit book *@
+
+        <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="card">
+            <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                <h3>Edit Book</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="updateBook" class="form-label mt-4">Select a book</label>
+                        <select multiple="" class="form-select" id="updateBook" @onchange="UpdateSelectedBook">
+                            @foreach (var book in books)
+                            {
+                                <option value="@book.Isbn13">@book.Title</option>
+
+                            }
+                        </select>
+                    </div>
+                    @if (updateBook != null)
+                    {
+                        <div class="form-group">
+                            <label for="ISBN13">ISBN13:</label>
+                            <input type="number" class="form-control" id="isbn13" placeholder="Enter ISBN13" @bind="updateBook.Isbn13">
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" id="title" placeholder="Enter book Title" @bind="updateBook.Title">
+                        </div>
+                            <div class="form-group">
+                                <label for="authorId" class="form-label mt-4">Author:</label>
+                                <select multiple="" class="form-select" id="authorId" @onchange="SelectAuthorForUpdateBook">
+                                    @foreach (var author in authors)
+                                    {
+                                        <option value="@author.AuthorId" selected="@IsAuthorSelected(author.AuthorId)">@author.FirstName @author.LastName</option>
+
+                                    }
+                                </select>
+                            </div>
+                        <div class="form-group">
+                            <label for="language">Language:</label>
+                            <input type="text" class="form-control" id="language" placeholder="Enter book Language" @bind="updateBook.Language">
+                        </div>
+                        <div class="form-group">
+                            <label for="publishDate">Publish Date:</label>
+                            <input type="date" class="form-control" id="publishDate" placeholder="Enter Publish Date" @bind="updateBook.PublishDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price:</label>
+                            <input type="number" class="form-control" id="price" placeholder="Enter book Price" @bind="updateBook.Price">
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfPages">Number of pages:</label>
+                            <input type="number" class="form-control" id="numberOfPages" placeholder="Enter number of pages" @bind="updateBook.NumberOfPages">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookCover">Number of pages:</label>
+                            <input type="text" class="form-control" id="bookCover" placeholder="Enter book cover path" @bind="updateBook.BookCover">
+                        </div>
+                        <button type="button" class="btn btn-success" style="margin-top: 20px;" @onclick="UpdateBook">Update</button>
+                        <button type="button" class="btn btn-danger" style="margin-top: 20px;" @onclick="DeleteBook">Delete</button>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    @* Add author *@
+        <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="card">
+            <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                <h3>Add Author</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Enter the authors first name" @bind="newAuthor.FirstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter authors last name" @bind="newAuthor.LastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate">Birth Date:</label>
+                        <input type="date" class="form-control" id="birthDate" placeholder="Enter authors birth date" @bind="newAuthor.BirthDate">
+                    </div>
+                    <button type="button" class="btn btn-success" style="margin-top: 20px;" @onclick="AddAuthor">Add Author</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* Edit author *@
+        <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="card">
+            <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                <h3>Edit Author</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="updateAuthor" class="form-label mt-4">Select an author</label>
+                        <select multiple="" class="form-select" id="updateAuthor" @onchange="UpdateSelectedAuthor">
+                            @foreach(var author in authors)
+                            {
+                                <option value="@author.AuthorId">@author.FirstName @author.LastName</option>
+                                
+                            }
+                        </select>
+                    </div>
+                    @if(updateAuthor != null)
+                    {
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Enter the authors first name" @bind="updateAuthor.FirstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter authors last name" @bind="updateAuthor.LastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate">Birth Date:</label>
+                        <input type="date" class="form-control" id="birthDate" placeholder="Enter authors birth date" @bind="updateAuthor.BirthDate">
+                    </div>
+                    <button type="button" class="btn btn-success" style="margin-top: 20px;" @onclick="UpdateAuthor">Update</button>    
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+        
+    
+    
+
+</div>
+
+</article>
+
+@* } *@

@@ -1,0 +1,72 @@
+﻿@page "/Cart"
+@using eBook.Data;
+@using eBook.Models;
+@using Microsoft.EntityFrameworkCore;
+@inject StoreDBContext dbcontext
+@inject NavigationManager Navigation
+
+
+<article class="content px-4" style="padding-top: 56px;">
+<div class="row">
+    <div class="col-md-12 text-center">
+<h1 class="text-center">Shopping Cart</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                @foreach (var group in Program.cart.GetCartBooks().GroupBy(book => book.Title))
+                {
+                    var book = group.First();
+                    <div class="card-body text-center">
+                        <h3>@book.Title @(group.Count() > 1 ? $"*{group.Count()}" : "")</h3>
+                        <p>@GetAuthorName(book.AuthorId)</p>
+                        <p>@book.Price KR</p>
+                        <div class="btn-group me-2" role="group" aria-label="Second group">
+                            <button type="button" class="btn btn-secondary" @onclick="() => Program.cart.RemoveFromCart(book)">-</button>
+                            <button type="button" class="btn btn-secondary" @onclick="() => Program.cart.AddToCart(book)">+</button>
+                        </div>
+                    </div>
+                }
+                <p>Total: @Program.cart.GetTotal().ToString() KR</p>
+                
+                @if(Program.cart.GetCartCount() == "0")
+                {
+                    
+                }
+                else if(Program.CurrentUser == null )
+                {
+                    <button type="button" class="btn btn-danger btn-sm d-block mx-auto" style="width: 310px; height: 50px;" @onclick="ClearCart">Clear cart</button>
+
+                    <button type="button" class="btn btn-success btn-sm d-block mx-auto" style="width: 310px; height: 50px;" @onclick="Login">Login</button>
+                    <p class="text-center btn-sm d-block mx-auto" style="width: 310px; height: 50px; margin-top: 10px;">You have to sign in to proceed to payment</p>
+                }
+                else
+                {
+
+                                <button type="button" class="btn btn-danger btn-sm d-block mx-auto" style="width: 310px; height: 50px;" @onclick="ClearCart">Clear cart</button>
+
+
+                    <div class="d-flex align-items-center justify-content-center">
+                         <klarna-express-button data-locale="sv-SE"
+                                                data-theme="dark"
+                                                @onclick="Checkout" />
+                    </div>
+                }
+                    
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</article>
+
+
+<script src="https://x.klarnacdn.net/express-button/v1/lib.js"
+        data-id="<mid>"
+        data-environment="playground"
+        async>
+</script>
+
+
