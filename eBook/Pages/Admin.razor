@@ -195,7 +195,59 @@
             </div>
         </div>
     </div>
-        
+    
+
+    @* Change stock *@
+
+        <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+            <div class="card">
+                <div style="text-align: center; margin-top: 50px;" class="mx-auto mt-5">
+                    <h3>Change stock in stores</h3>
+                    <form>
+                        <p class="lead">Choose a store to see the stock and the option to adjust it</p>
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="margin-top: 25px; margin-bottom: 50px;">
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradioF" autocomplete="off" checked="">
+                        <label class="btn btn-outline-primary" for="btnradioF" @onclick="() => UpdateChoosenStore(stores[1])">Frölunda</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradioM" autocomplete="off" checked="">
+                        <label class="btn btn-outline-primary" for="btnradioM" @onclick="() => UpdateChoosenStore(stores[0])">Mölndal</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradioN" autocomplete="off" checked="">
+                        <label class="btn btn-outline-primary" for="btnradioN" @onclick="() => UpdateChoosenStore(stores[2])">Nordstan</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="btnradioA" autocomplete="off" checked="">
+                        <label class="btn btn-outline-primary" for="btnradioA" @onclick="() => UpdateChoosenStore(null)">None</label>
+                        </div>
+                        @if (storeToAddStock != null)
+                        {
+                            <p style="margin-bottom: 50px;">You have selected @storeToAddStock.StoreName</p>
+                            @foreach(var stock in stockbalance)
+                            {
+                                if(stock.StoreId == storeToAddStock.StoreId)
+                                {
+                                    <row>
+                                        <h4 style="margin-bottom: 20px;">@GetBookName(stock.Isbn13)</h4>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p>Quantity:</p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                    <input type="number" class="form-control" id="quantity" placeholder="quantity" @bind="stock.Quantity">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button type="button" class="btn btn-success" style="margin-bottom: 50px;" @onclick="() => UpdateStock(stock)">Update</button>
+                                            </div>
+                                        </div>
+                                    </row>
+                                }
+                            }
+                            
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
     
     
 

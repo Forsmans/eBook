@@ -16,6 +16,10 @@ namespace eBook.Pages
         private Author newAuthor = new Author();
         private string selectedAuthorId;
         private Author updateAuthor;
+
+        private List<Store> stores = new List<Store>();
+        private List<StockBalance> stockbalance = new List<StockBalance>();
+        private Store storeToAddStock = null;
         private bool IsAuthorSelected(int authorId) => updateBook.AuthorId == authorId;
 
         protected override async Task OnInitializedAsync()
@@ -28,6 +32,16 @@ namespace eBook.Pages
             using (var context = new StoreDBContext())
             {
                 authors = await dbcontext.Authors.ToListAsync();
+            }
+
+            using (var context = new StoreDBContext())
+            {
+                stores = await dbcontext.Stores.ToListAsync();
+            }
+
+            using (var context = new StoreDBContext())
+            {
+                stockbalance = await dbcontext.StockBalances.ToListAsync();
             }
 
 
@@ -136,5 +150,24 @@ namespace eBook.Pages
             await dbcontext.SaveChangesAsync();
         }
 
+        public async void UpdateChoosenStore(Store selectedStore)
+        {
+            storeToAddStock = selectedStore;
+        }
+
+        private string GetBookName(string isbn)
+        {
+            Book book = books.FirstOrDefault(b => b.Isbn13 == isbn);
+
+            string bookName = book.Title;
+
+            return bookName;
+        }
+
+        private async Task UpdateStock(StockBalance stock)
+        {
+            dbcontext.StockBalances.Update(stock);
+            await dbcontext.SaveChangesAsync();
+        }
     }
 }
