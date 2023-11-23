@@ -41,10 +41,6 @@ namespace eBook.Pages
                     }
                 }
             }
-            //orders = await dbcontext.Orders.ToListAsync();
-            //orderDetails = await dbcontext.OrderDetails.ToListAsync();
-            //books = await dbcontext.Books.ToListAsync();
-            //authors = await dbcontext.Authors.ToListAsync();
         }
         public void LogOut()
         {

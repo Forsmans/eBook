@@ -44,9 +44,6 @@ namespace eBook.Pages
                 stockbalance = await dbcontext.StockBalances.ToListAsync();
             }
 
-
-            //authors = await dbcontext.Authors.ToListAsync();
-            //books = await dbcontext.Books.ToListAsync();
         }
         public void LogOut()
         {
@@ -71,7 +68,6 @@ namespace eBook.Pages
             }
             else
             {
-                // Handle the case where the array is empty or not in the expected format.
             }
         }
 

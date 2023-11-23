@@ -30,19 +30,14 @@ namespace eBook.Pages
                     {
                         if (customer.Password == password)
                         {
-                            // Login Success!
-                            // Toaster?
                             Program.CurrentUser = customer;
                             Navigation.NavigateTo("/User");
                         }
                         else
                         {
-                            // Wrong Password!
-                            // Toaster ?
                         }
                     }
                 }
-                //Email not found, register new? 
             }
         }
     }

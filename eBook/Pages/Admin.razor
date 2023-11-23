@@ -5,12 +5,7 @@
 @inject StoreDBContext dbcontext
 @inject NavigationManager Navigation
 
-@* @if (Program.CurrentUser != null && (Program.CurrentUser.Email.ToLower() != "admin@bookstore.com" || Program.CurrentUser.Email.ToLower() == null))
-{
-    Navigation.NavigateTo("/User");
-}else
-{
-     *@
+
 <article class="content px-4" style="padding-top: 56px;">
 <div class="row">
 
@@ -254,5 +249,3 @@
 </div>
 
 </article>
-
-@* } *@
